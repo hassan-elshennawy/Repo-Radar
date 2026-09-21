@@ -2,47 +2,35 @@
 
 A frontend dashboard that lets users search GitHub repositories, track their favorites, and monitor their latest stats. Built as a technical challenge showcasing modern React architecture and data fetching patterns.
 
-## 🚀 Features
+## 🛠️ Architecture & Technical Decisions
 
-- **Real-time Search:** Debounced GitHub repository search directly from the GitHub REST API.
-- **Track & Monitor:** Save favorite repositories to track key metrics like Stars, Open Issues, and Last Commit dates.
-- **Data Visualization:** An interactive bar chart dynamically comparing stars across all tracked repositories.
-- **Offline Persistence:** Tracked repositories are seamlessly persisted in `localStorage`.
-- **Advanced State Management:** Leverages Redux Toolkit and RTK Query for efficient caching, invalidation, and data fetching.
-- **Polished UI:** Built with Material UI (MUI), featuring a fully responsive layout, loading skeletons, and a seamless Light/Dark Mode toggle.
+- **State & Data Fetching (RTK Query):** Chosen over standard Redux thunks or Context API for its powerful built-in caching, deduping, and automatic state management (`isLoading`, `isFetching`). The `providesTags` and `invalidateTags` feature is used to handle global refetching ("Refresh All") cleanly without writing boilerplate code.
+- **Debounced Inputs:** Implemented a custom `useDebounce` hook for the search input to delay API calls by 500ms. This prevents spamming the GitHub API while typing and ensures a snappy UI.
+- **UI & Styling (Material UI):** MUI v6 was selected to rapidly build a polished, accessible, and responsive interface. Components like `<Skeleton>` are used to prevent layout shifts during network requests, and `ThemeProvider` handles the seamless Light/Dark mode toggle.
+- **Data Visualization:** `Recharts` was integrated for the bar chart due to its declarative, React-friendly API and responsive nature.
 
-## 🛠️ Tech Stack
+## ⚠️ Assumptions & Limitations
 
-- **Framework:** React 19 + TypeScript + Vite
-- **State & Data Fetching:** Redux Toolkit + RTK Query
-- **Styling & UI:** Material UI (MUI) v6
-- **Data Visualization:** Recharts
-- **API:** GitHub REST API
+- **GitHub API Rate Limits:** The app uses unauthenticated requests to the GitHub REST API, which has a strict limit of 60 requests per hour. It is assumed the reviewer will not exceed this during normal testing. Handling OAuth/PAT tokens was considered out of scope for this specific UI challenge.
+- **Storage Strategy:** Tracked repository names are persisted using standard browser `localStorage`. It is assumed the user will not track enough repositories to exceed the ~5MB quota limit.
+- **Data Freshness:** Data is fetched on mount and cached. The app does not implement background polling (e.g., websockets or intervals), assuming that the manual "Refresh" / "Refresh All" buttons are sufficient for the dashboard requirements.
 
-## ⚙️ Technical Highlights
+## 🏃‍♂️ Setup Instructions
 
-- **RTK Query Integration:** Uses RTK Query's caching and `providesTags` to efficiently fetch and invalidate repository data without unnecessary network requests.
-- **Debounced Inputs:** Implements a custom `useDebounce` hook to prevent rate-limiting the GitHub API during fast typing.
-- **UI UX Polish:** Utilizes MUI `<Skeleton>` components for smooth loading states and avoids layout shifts. Includes deep linking to repositories and rich avatar displays.
-
-## 🏃‍♂️ Running Locally
-
-1. Clone the repository:
+1. **Clone the repository:**
 ```bash
 git clone https://github.com/YOUR_USERNAME/repo-radar-challenge.git
 ```
-2. Navigate into the directory:
+2. **Navigate into the directory:**
 ```bash
 cd repo-radar
 ```
-3. Install dependencies:
+3. **Install dependencies:**
 ```bash
 npm install
 ```
-4. Start the development server:
+4. **Start the development server:**
 ```bash
 npm run dev
 ```
-
----
-*Built with ❤️ for the Frontend Challenge.*
+5. **View the app:** Open your browser and navigate to `http://localhost:5173`
