@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, List, ListItem, ListItemText, Button, CircularProgress, Paper, InputAdornment, Link, ListItemAvatar, Avatar, IconButton } from '@mui/material';
+import { TextField, List, ListItem, ListItemText, Button, CircularProgress, Paper, InputAdornment, Link, ListItemAvatar, Avatar, IconButton, Typography } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useLazySearchReposQuery } from '../services/github';
 import { useDebounce } from '../hooks/useDebounce';
@@ -9,7 +9,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 
 export const RepoSearch = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [triggerSearch, { data, isFetching }] = useLazySearchReposQuery();
+  const [triggerSearch, { data, isFetching, isError }] = useLazySearchReposQuery();
   const dispatch = useAppDispatch();
   const trackedRepos = useAppSelector(state => state.trackedRepos.repoNames);
 
@@ -86,6 +86,18 @@ export const RepoSearch = () => {
             );
           })}
         </List>
+      )}
+
+      {searchTerm.trim() !== '' && !isFetching && data?.items && data.items.length === 0 && (
+        <Typography color="text.secondary" sx={{ mt: 2, textAlign: 'center' }}>
+          No repositories found.
+        </Typography>
+      )}
+
+      {isError && (
+        <Typography color="error" sx={{ mt: 2, textAlign: 'center' }}>
+          GitHub API limit reached or network error. Please try again later.
+        </Typography>
       )}
     </Paper>
   );
