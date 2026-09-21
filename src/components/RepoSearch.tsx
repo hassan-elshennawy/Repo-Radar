@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { TextField, List, ListItem, ListItemText, Button, CircularProgress, Paper, InputAdornment, Link, ListItemAvatar, Avatar } from '@mui/material';
+import { TextField, List, ListItem, ListItemText, Button, CircularProgress, Paper, InputAdornment, Link, ListItemAvatar, Avatar, IconButton } from '@mui/material';
+import ClearIcon from '@mui/icons-material/Clear';
 import { useLazySearchReposQuery } from '../services/github';
 import { useDebounce } from '../hooks/useDebounce';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
@@ -31,11 +32,17 @@ export const RepoSearch = () => {
         onChange={handleSearchChange}
         slotProps={{
             input: {
-                endAdornment: isFetching ? (
+                endAdornment: (
                   <InputAdornment position="end">
-                    <CircularProgress size={20} />
+                    {isFetching ? (
+                      <CircularProgress size={20} />
+                    ) : searchTerm ? (
+                      <IconButton onClick={() => setSearchTerm('')} edge="end" size="small">
+                        <ClearIcon />
+                      </IconButton>
+                    ) : null}
                   </InputAdornment>
-                ) : null,
+                ),
               },
         }}
       />
